@@ -1,10 +1,9 @@
 -- ====================================================================
--- VERIFIED MAP FINDER + AUTO/MANUAL PLACER
--- Press 'P' during a match to test-fire placements immediately.
+-- FULLY AUTOMATED MULTI-MAP AUTO-PLACER + MANUAL 'P' TEST TRIGGER
 -- ====================================================================
 
 local CONFIG = {
-    DELAY_BETWEEN_PLACEMENTS = 1.0,
+    DELAY_BETWEEN_PLACEMENTS = 1.0, -- Seconds between placements
     REPLICA_ID = 80,
 }
 
@@ -13,8 +12,8 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local UserInputService = game:GetService("UserInputService")
 
 print("==================================================")
-print("[Auto-Placer]: Verified Map Finder script loaded!")
-print("[Action Required]: Press 'P' during your match to execute!")
+print("[Auto-Placer]: Multi-Map Automation & Timer Script Loaded!")
+print("[Action]: Will auto-detect map & trigger on match start, or press 'P' manually.")
 print("==================================================")
 
 local mapQueues = {
@@ -73,7 +72,38 @@ local mapQueues = {
     },
 }
 
--- The verified working map matcher
+-- Timer check logic (checks TopGameHUD first, with a universal fallback)
+local function getCleanTimeText()
+    local success, result = pcall(function()
+        local topHUD = player.PlayerGui:FindFirstChild("TopGameHUD")
+        if topHUD then
+            for _, descendant in ipairs(topHUD:GetDescendants()) do
+                if descendant:IsA("TextLabel") and descendant.Text ~= "" then
+                    local foundTime = string.match(descendant.Text, "%d+:%d+")
+                    if foundTime then
+                        return foundTime
+                    end
+                end
+            end
+        end
+
+        -- Universal fallback check
+        for _, gui in ipairs(player.PlayerGui:GetChildren()) do
+            for _, descendant in ipairs(gui:GetDescendants()) do
+                if descendant:IsA("TextLabel") and descendant.Text ~= "" then
+                    local foundTime = string.match(descendant.Text, "%d+:%d+")
+                    if foundTime then
+                        return foundTime
+                    end
+                end
+            end
+        end
+        return nil
+    end)
+    return success and result or nil
+end
+
+-- Verified Map Matcher
 local function findMatchedMap()
     for _, gui in ipairs(player.PlayerGui:GetChildren()) do
         for _, desc in ipairs(gui:GetDescendants()) do
@@ -98,6 +128,7 @@ local function findMatchedMap()
     return nil, nil, nil
 end
 
+-- Placement Execution Function
 local function firePlacements(mapName, queue)
     local remote = ReplicatedStorage:FindFirstChild("RemoteEvents") and ReplicatedStorage.RemoteEvents:FindFirstChild("ReplicaSignal")
     if not remote then
@@ -114,7 +145,7 @@ local function firePlacements(mapName, queue)
     print("[Execution]: Finished placement sequence!")
 end
 
--- Press 'P' to test-fire
+-- Manual 'P' Key Trigger for testing
 UserInputService.InputBegan:Connect(function(input, gameProcessed)
     if input.KeyCode == Enum.KeyCode.P then
         print("\n[Trigger]: 'P' pressed. Finding map...")
@@ -125,5 +156,42 @@ UserInputService.InputBegan:Connect(function(input, gameProcessed)
         else
             warn("[Trigger]: Map finder could not spot a matching map text label.")
         end
+    end
+end)
+
+-- Fully Automated Timer Loop
+task.spawn(function()
+    print("[Auto-Placer]: Automation loop active. Waiting for match start...")
+    local matchCount = 0
+
+    while true do
+        -- Loop until clock hits target start times
+        while true do
+            local currentTime = getCleanTimeText()
+            
+            if currentTime then
+                if currentTime == "00:00" or currentTime == "0:00" or currentTime == "00:01" or currentTime == "0:01" then
+                    matchCount = matchCount + 1
+                    print(string.format("[Auto-Placer]: MATCH #%d START DETECTED! (Clock read: '%s')", matchCount, currentTime))
+                    task.wait(1) -- Buffer delay
+                    break
+                end
+            end
+            
+            task.wait(1)
+        end
+
+        -- Automatically find the map and execute placement queue
+        local mapName, queue, rawText = findMatchedMap()
+        if mapName and queue then
+            print(string.format("[Auto-Placer]: Auto-detected map '%s' (Text: '%s')", mapName, rawText))
+            firePlacements(mapName, queue)
+        else
+            warn("[Auto-Placer Error]: Match started, but map text label could not be matched!")
+        end
+
+        print("[Auto-Placer]: Placements done. Waiting for match to end...")
+        -- Wait 20 seconds before checking for match start again to avoid re-triggering in the same game
+        task.wait(20)
     end
 end)
