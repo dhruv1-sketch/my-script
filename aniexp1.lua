@@ -4,7 +4,7 @@
 
 local CONFIG = {
     DELAY_BETWEEN_PLACEMENTS = 1.0, -- Seconds between placements
-    REPLICA_ID = 80,
+    REPLICA_ID = 81,
 }
 
 local player = game:GetService("Players").LocalPlayer
