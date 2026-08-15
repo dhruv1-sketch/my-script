@@ -4,7 +4,7 @@
 
 local CONFIG = {
     DELAY_BETWEEN_PLACEMENTS = 1.0, -- Seconds between placements (gives time to earn cash)
-    REPLICA_ID = 81,
+    REPLICA_ID = 80,
 }
 
 local player = game:GetService("Players").LocalPlayer
@@ -30,16 +30,13 @@ local function getCleanTimeText()
 end
 
 local placementQueue = {
-   { type = "Place", slot = 4, cframe = CFrame.new(3021.3515625, 1969.2454833984, 2933.9638671875, 1, 0, 0, 0, 1, 0, 0, 0, 1) },
-   { type = "Place", slot = 4, cframe = CFrame.new(3025.6481933594, 1969.2454833984, 2934.025390625, 1, 0, 0, 0, 1, 0, 0, 0, 1) },
-   { type = "Place", slot = 4, cframe = CFrame.new(3030.4777832031, 1969.2454833984, 2933.6953125, 1, 0, 0, 0, 1, 0, 0, 0, 1) },
-   { type = "Place", slot = 1, cframe = CFrame.new(3035.1518554688, 1969.2454833984, 2932.8630371094, 1, 0, 0, 0, 1, 0, 0, 0, 1) },
-   { type = "Place", slot = 5, cframe = CFrame.new(3016.3334960938, 1969.2454833984, 2906.6313476562, 1, 0, 0, 0, 1, 0, 0, 0, 1) },
-   { type = "Place", slot = 3, cframe = CFrame.new(3025.0090332031, 1969.2454833984, 2883.6979980469, 1, 0, 0, 0, 1, 0, 0, 0, 1) },
-   { type = "Place", slot = 2, cframe = CFrame.new(3013.0200195312, 1969.2454833984, 2907.5053710938, 1, 0, 0, 0, 1, 0, 0, 0, 1) },
-   { type = "Place", slot = 6, cframe = CFrame.new(3019.7932128906, 1969.2454833984, 2884.830078125, 1, 0, 0, 0, 1, 0, 0, 0, 1) },
-   { type = "Place", slot = 6, cframe = CFrame.new(3019.556640625, 1969.2454833984, 2894.6218261719, 1, 0, 0, 0, 1, 0, 0, 0, 1) },
-   { type = "Place", slot = 6, cframe = CFrame.new(3023.4865722656, 1969.2454833984, 2894.7626953125, 1, 0, 0, 0, 1, 0, 0, 0, 1) }
+   { type = "Place", slot = 4, cframe = CFrame.new(2949.4958496094, 1961.7807617188, 3018.5354003906, 1, 0, 0, 0, 1, 0, 0, 0, 1) },
+   { type = "Place", slot = 4, cframe = CFrame.new(2948.6328125, 1961.7807617188, 3015.5444335938, 1, 0, 0, 0, 1, 0, 0, 0, 1) },
+   { type = "Place", slot = 4, cframe = CFrame.new(2950.4658203125, 1961.7807617188, 3011.2854003906, 1, 0, 0, 0, 1, 0, 0, 0, 1) },
+   { type = "Place", slot = 1, cframe = CFrame.new(2952.0744628906, 1961.7807617188, 3016.830078125, 1, 0, 0, 0, 1, 0, 0, 0, 1) },
+   { type = "Place", slot = 5, cframe = CFrame.new(2977.3828125, 1962.3179931641, 3042.5661621094, 1, 0, 0, 0, 1, 0, 0, 0, 1) },
+   { type = "Place", slot = 6, cframe = CFrame.new(2988.6860351562, 1961.7801513672, 3048.1108398438, 1, 0, 0, 0, 1, 0, 0, 0, 1) },
+   { type = "Place", slot = 3, cframe = CFrame.new(3000.2465820312, 1961.7801513672, 3046, 1, 0, 0, 0, 1, 0, 0, 0, 1) }
 }
 
 task.spawn(function()
